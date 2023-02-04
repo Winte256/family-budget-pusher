@@ -25,12 +25,14 @@ const greeting = () => async (ctx: Context) => {
     
     try {
       const value = (ctx?.message as any)['text'];
-      
-      debug(value);
 
-      const moneyLeft = await pushNewSpending(value);
-
-      await replyToMessage(ctx, messageId, `данные занесены, на сегодня осталось ${moneyLeft} USD`);
+      if (typeof value === 'string' && !!Number(value)) {
+        const moneyLeft = await pushNewSpending(value);
+        
+        await replyToMessage(ctx, messageId, `данные занесены, на сегодня осталось ${moneyLeft} USD`);
+      } else {
+        await replyToMessage(ctx, messageId, `Ошибка формата`);
+      }
     } catch (err) {
       await replyToMessage(ctx, messageId, `Ошибка формата`);
     }
