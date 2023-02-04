@@ -1,0 +1,19 @@
+{
+  "name": "family-budget-pusher",
+  "version": "0.0.1",
+  "description": "api of budget planning",
+  "main": "api/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Winte256/family-budget-pusher.git"
+  },
+  "author": "Winte256",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Winte256/family-budget-pusher/issues"
+  },
+  "homepage": "https://github.com/Winte256/family-budget-pusher#readme"
+}
