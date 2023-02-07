@@ -1,4 +1,4 @@
-import { Context } from 'telegraf';
+import { Context, deunionize } from 'telegraf';
 import createDebug from 'debug';
 import { pushNewSpending } from '../utils/sheets';
 
@@ -24,7 +24,7 @@ const greeting = () => async (ctx: Context) => {
 
     
     try {
-      const value = (ctx?.message as any)['text'];
+      const value = deunionize(ctx?.message).text;
 
       if (typeof value === 'string' && !!Number(value)) {
         const moneyLeft = await pushNewSpending(value);
