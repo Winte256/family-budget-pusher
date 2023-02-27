@@ -5,7 +5,7 @@ import {
 import createDebug from 'debug';
 import getCurrentRow from './getCurrentRow';
 
-const debug = createDebug('sheet');
+const debug = createDebug('bot:sheet');
 
 const { GOOGLE_SHEET_ID, GOOGLE_SERVICE_EMAIL, GOOGLE_SERVICE_PRIVATE_KEY } =
   process.env;
@@ -63,12 +63,16 @@ export const pushNewSpending = async ({
   currency: string;
   isToday: boolean;
 }) => {
+  debug('upload spending');
+
   const sheet = await initSheet();
   let currentRowDate = getCurrentRow();
 
+  debug('initial day', currentRowDate);
   if (!isToday && currentRowDate > 1) {
     currentRowDate -= 1;
   }
+  debug('modifed day', currentRowDate);
 
   const cellsByCurrency = {
     usd: 11,
@@ -107,15 +111,16 @@ export const pushNewDesc = async ({
   value: string;
   isToday: boolean;
 }) => {
+  debug('upload new desc');
+
   const sheet = await initSheet();
   let currentRowDate = getCurrentRow();
 
-  debug('upload new desc');
-  debug('day', currentRowDate);
-
+  debug('initial day', currentRowDate);
   if (!isToday && currentRowDate > 1) {
     currentRowDate -= 1;
   }
+  debug('modifed day', currentRowDate);
 
   const descCellId = 7;
 

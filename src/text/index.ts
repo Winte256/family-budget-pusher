@@ -65,9 +65,9 @@ const writeDesc = async ({
 }) => {
   try {
     const value = ctx.message!.text || '';
-    const result = await pushNewDesc({
+    await pushNewDesc({
       value,
-      isToday: !!ctx.session.spentData?.isActual,
+      isToday: !!ctx.session.spentData?.isToday,
     });
 
     ctx.session.spentData = {};
