@@ -1,7 +1,7 @@
-import { Context } from './../core/context';
+import { Context } from '../core/context';
 
 import createDebug from 'debug';
-import { currencyMenu } from '../keyboards';
+import { mainMenu } from '../keyboards';
 import { Composer } from "grammy";
 
 const composer = new Composer<Context>();
@@ -10,12 +10,12 @@ const debug = createDebug('bot:push_command');
 
 export const pushHandler = (ctx: Context) =>
   ctx.reply(
-    'Выберие валюту',
+    'Главное меню',
     {
-      reply_markup: currencyMenu
+      reply_markup: mainMenu
     }
   )
 
-composer.command('push', pushHandler);
+composer.command('menu', pushHandler);
 
 export default composer;

@@ -1,4 +1,4 @@
-import { GoogleSpreadsheet } from 'google-spreadsheet'
+import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
 import getCurrentRow from './getCurrentRow'
 
 const {
@@ -17,18 +17,54 @@ export const initSheet = async () => {
   });
   
   await doc.loadInfo();
-  const lastSheet = doc.sheetsByIndex[0]
+  const lastSheet = doc.sheetsByIndex[1]
 
-  await lastSheet.loadCells('A1:M32');
+  await lastSheet.loadCells('A1:O32');
 
   return lastSheet
 }
 
-export const pushNewSpending = async (value: string) => {
+export const getSaldo = async ({sheet, currentRowDate}: {sheet?: GoogleSpreadsheetWorksheet, currentRowDate: number}) => {
+  const table = sheet || await initSheet();
+
+  if (sheet) {
+    await table.loadCells('A1:O32');
+  }
+
+
+  let leftMoney: any = table.getCell(currentRowDate, 14)
+
+  if (typeof leftMoney.value === 'string') {
+    leftMoney = leftMoney.value
+      .split(';')
+      .map((a: string) => a.split('/'))
+      .map(([key, value]: string[]) => [key, Number(value).toFixed(2)])
+    
+    return Object.fromEntries(leftMoney)
+  }
+
+  return leftMoney.value;
+}
+
+export const pushNewSpending = async ({value, currency}: {value: string, currency: string}) => {
   const sheet = await initSheet()
   const currentRowDate = getCurrentRow();
 
-  const todaySpendingsCell = sheet.getCell(currentRowDate, 8)
+  const cellsByCurrency = {
+    usd: 11,
+    try: 9,
+    rub: 10,
+    rsd: 8,
+  };
+
+  const cellWithNeedCurrency = cellsByCurrency[currency as keyof typeof cellsByCurrency]
+
+  if (!cellWithNeedCurrency) {
+    throw new Error('Валюта не поддерживается')
+  }
+
+
+  const todaySpendingsCell = sheet.getCell(currentRowDate, cellWithNeedCurrency)
   
   const {formula} = todaySpendingsCell;
   let newFormula = formula ? formula + '+' : '='
@@ -37,8 +73,6 @@ export const pushNewSpending = async (value: string) => {
   todaySpendingsCell.formula = newFormula;
   
   await sheet.saveUpdatedCells()
-  
-  const leftMoney = sheet.getCell(currentRowDate, 12)
 
-  return leftMoney.value;
+  return (await getSaldo({sheet, currentRowDate}))[currency]
 }

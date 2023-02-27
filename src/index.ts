@@ -1,37 +1,29 @@
-import { Markup,  Telegraf } from 'telegraf';
+import { Context } from './core/context';
 
-
-import { push } from './commands';
-import { greeting } from './text';
+import { Bot } from "grammy";
+import keyboards from './keyboards';
+import text from './text';
+import commands from './commands';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { development, production } from './core';
+import { session } from './core/session';
 
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const ENVIRONMENT = process.env.NODE_ENV || '';
 
-const bot = new Telegraf(BOT_TOKEN);
+const bot = new Bot<Context>(BOT_TOKEN);
 
-bot.start((ctx) => ctx.reply('Приветик'));
-bot.help((ctx) => ctx.reply('Help message'));
+bot.use(session);
+bot.use(keyboards);
 
-bot.command('push', push());
-bot.command(
-  'add',
-  (ctx) =>
-    ctx.reply(
-      'Выберие валюту',
-      Markup.keyboard([['💰 USD', '🇹🇷 TRY', '🇷🇺 RUB']])
-        .oneTime()
-        .resize()
-    )
-);
+bot.use(commands);
+bot.use(text);
 
-bot.hears('💰 USD', (ctx) => ctx.reply('Yay!3'));
-bot.hears('🇹🇷 TRY', (ctx) => ctx.reply('Yay!1'));
-bot.hears('🇷🇺 RUB', (ctx) => ctx.reply('Yay!2'));
+bot.command('start',(ctx) => ctx.reply('Личный бот учета финансов'));
+bot.command('help', (ctx) => ctx.reply('Help message'));
 
-bot.on('message', greeting());
+// bot.on('message', greeting())
 
 //prod mode (Vercel)
 export const startVercel = async (req: VercelRequest, res: VercelResponse) => {
