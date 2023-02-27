@@ -1,15 +1,16 @@
 import { session as session_ } from 'grammy';
 
-
 export interface Session {
   spentData: {
-    [key: string]: any;
-  }
+    isActual?: boolean;
+    currency?: string;
+    isToday?: boolean;
+    waitForDesc?: boolean;
+  };
 }
 
 export const initial = (): Session => ({
-  spentData: {}
+  spentData: {},
 });
-
 
 export const session = session_({ initial });
