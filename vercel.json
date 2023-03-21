@@ -3,7 +3,7 @@
   "public": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((.*)(^ckeckBudget))",
       "destination": "api/index.ts"
     }
   ],
