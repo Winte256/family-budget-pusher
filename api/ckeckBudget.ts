@@ -1,5 +1,5 @@
 import { flags } from '../src/keyboards';
-import { Bot } from 'grammy';
+// import { Bot } from 'grammy';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSaldo } from '../src/utils/sheets';
 import getCurrentRow from '../src/utils/getCurrentRow';
@@ -14,7 +14,7 @@ export default async function handle(req: VercelRequest, res: VercelResponse) {
 
     const BOT_TOKEN = process.env.BOT_TOKEN || '';
 
-    const bot = new Bot(BOT_TOKEN);
+    // const bot = new Bot(BOT_TOKEN);
 
     const saldo = await getSaldo({ currentRowDate: getCurrentRow() });
 
@@ -23,9 +23,7 @@ export default async function handle(req: VercelRequest, res: VercelResponse) {
         ([key, value]) =>
           `${(flags as any)[key].split(' ').reverse().join('')} ${value}`
       )
-      .join('\n');
-
-    await bot.api.sendMessage(chatId, 'На сегодня осталось' + '```\n' + text + '\n```', { parse_mode: 'MarkdownV2' });
+      .join('<br>');
 
     res.send(text);
   } catch (e: any) {
