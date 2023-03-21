@@ -27,6 +27,7 @@ export default async function handle(req: VercelRequest, res: VercelResponse) {
 
     await bot.api.sendMessage(chatId, 'На сегодня осталось' + '```\n' + text + '\n```', { parse_mode: 'MarkdownV2' });
 
+    res.send(text);
   } catch (e: any) {
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/html');
